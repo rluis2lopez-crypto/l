@@ -1,70 +1,41 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 0;
+:root{
+--green-1: #0f5132;
+--green-2: #197a4a;
+--green-3: #1fa65a;
+--bg: linear-gradient(180deg, #eafaf0 0%, #f4fff9 100%);
+--card-bg: linear-gradient(180deg, rgba(31,166,90,0.06), rgba(25,122,74,0.03));
+--glass: rgba(255,255,255,0.6);
 }
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+body{background:var(--bg);color:var(--green-1);display:flex;align-items:center;justify-content:center;padding:24px}
+.app{width:100%;max-width:1100px}
+.hero{background:var(--card-bg);padding:18px;border-radius:14px;box-shadow:0 6px 18px rgba(31,122,74,0.08);margin-bottom:18px}
+.hero h1{margin:0;font-size:1.6rem;color:var(--green-1)}
+.hero p{margin:6px 0 0 0;color:#0d2f1d}
 
-.container {
-  max-width: 500px;
-  background-color: white;
-  margin: 40px auto;
-  padding: 20px 30px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
 
-h1 {
-  text-align: center;
-  color: #333;
-}
+.calculator{display:grid;grid-template-columns:320px 1fr;gap:18px}
+.controls{background:rgba(255,255,255,0.8);padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(20,80,40,0.05)}
+.controls label{display:block;margin-bottom:8px;font-weight:600}
+.controls select,input{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(25,122,74,0.12);margin-bottom:10px}
+.inputs .row{display:flex;gap:8px}
+.inputs .row input{flex:1}
+.actions{display:flex;gap:8px;margin-top:8px}
+button{background:var(--green-2);color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:600}
+button.secondary{background:transparent;color:var(--green-1);border:1px solid rgba(25,122,74,0.12)}
 
-label {
-  display: block;
-  margin-top: 15px;
-  font-weight: bold;
-}
 
-.select, .input {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  font-size: 1rem;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+.results{background:rgba(255,255,255,0.92);padding:16px;border-radius:12px}
+.results h2{margin-top:0}
+.result-card{padding:12px;border-radius:8px;background:rgba(31,166,90,0.04);margin-bottom:10px;min-height:48px;display:flex;align-items:center}
 
-.input-group {
-  margin-bottom: 10px;
-}
 
-.btn {
-  margin-top: 20px;
-  width: 100%;
-  padding: 12px;
-  background-color: #007BFF;
-  border: none;
-  color: white;
-  font-size: 1.1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+.notes{margin-top:14px;text-align:center;color:#0f3f22}
 
-.btn:hover {
-  background-color: #0056b3;
-}
 
-.error {
-  color: red;
-  margin-top: 15px;
-  font-weight: bold;
-}
-
-.resultado {
-  margin-top: 20px;
-  font-weight: bold;
-  color: #007BFF;
-  font-size: 1.2rem;
+@media(max-width:800px){
+.calculator{grid-template-columns:1fr;}
+.controls{order:2}
+.results{order:1}
 }
