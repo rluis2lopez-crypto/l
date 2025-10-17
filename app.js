@@ -1,132 +1,75 @@
-import React, { useState } from 'react';
-
-const inputsPorFigura = {
-  cilindro: [
-    { label: 'Radio', id: 'radio' },
-    { label: 'Altura', id: 'altura' }
-  ],
-  cubo: [
-    { label: 'Lado', id: 'lado' }
-  ],
-  prisma: [
-    { label: 'Base', id: 'base' },
-    { label: 'Altura', id: 'altura' },
-    { label: 'Profundidad', id: 'profundidad' }
-  ],
-  cono: [
-    { label: 'Radio', id: 'radio' },
-    { label: 'Altura', id: 'altura' }
-  ],
-  esfera: [
-    { label: 'Radio', id: 'radio' }
-  ],
-  piramide: [
-    { label: 'Área de la base', id: 'base' },
-    { label: 'Altura', id: 'altura' }
-  ]
-};
-
-function calcularVolumen(figura, valores) {
-  switch (figura) {
-    case 'cilindro':
-      return Math.PI * valores.radio ** 2 * valores.altura;
-    case 'cubo':
-      return valores.lado ** 3;
-    case 'prisma':
-      return valores.base * valores.altura * valores.profundidad;
-    case 'cono':
-      return (1 / 3) * Math.PI * valores.radio ** 2 * valores.altura;
-    case 'esfera':
-      return (4 / 3) * Math.PI * valores.radio ** 3;
-    case 'piramide':
-      return (1 / 3) * valores.base * valores.altura;
-    default:
-      return 0;
-  }
+(function(){
+function format(n){
+if(n===null || n===undefined || Number.isNaN(n)) return '—';
+return Number.isFinite(n) ? parseFloat(n.toFixed(4)) : '—';
 }
 
-export default function App() {
-  const [figura, setFigura] = useState('');
-  const [valores, setValores] = useState({});
-  const [resultado, setResultado] = useState(null);
-  const [error, setError] = useState(null);
 
-  const manejarCambioFigura = (e) => {
-    setFigura(e.target.value);
-    setValores({});
-    setResultado(null);
-    setError(null);
-  };
+function calculate(){
+const shape = shapeSelect.value;
+const get = id => parseFloat(document.getElementById(id)?.value);
 
-  const manejarCambioInput = (e) => {
-    setValores(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
 
-  const manejarCalcular = () => {
-    setError(null);
+let area=null, per=null, vol=null;
 
-    if (!figura) {
-      setError('Por favor, selecciona una figura.');
-      setResultado(null);
-      return;
-    }
 
-    const campos = inputsPorFigura[figura];
-    for (let campo of campos) {
-      const val = parseFloat(valores[campo.id]);
-      if (isNaN(val) || val <= 0) {
-        setError('Por favor, ingresa valores válidos y positivos.');
-        setResultado(null);
-        return;
-      }
-    }
-
-    const valoresNum = {};
-    campos.forEach(campo => {
-      valoresNum[campo.id] = parseFloat(valores[campo.id]);
-    });
-
-    const vol = calcularVolumen(figura, valoresNum);
-    setResultado(vol.toFixed(2));
-  };
-
-  return (
-    <div className="container">
-      <h1>Calculadora de Volúmenes</h1>
-
-      <label>Selecciona la figura:</label>
-      <select value={figura} onChange={manejarCambioFigura} className="select">
-        <option value="">-- Selecciona --</option>
-        <option value="cilindro">Cilindro</option>
-        <option value="cubo">Cubo</option>
-        <option value="prisma">Prisma Rectangular</option>
-        <option value="cono">Cono</option>
-        <option value="esfera">Esfera</option>
-        <option value="piramide">Pirámide</option>
-      </select>
-
-      {figura && inputsPorFigura[figura].map(({ label, id }) => (
-        <div key={id} className="input-group">
-          <label>{label}:</label>
-          <input
-            type="number"
-            name={id}
-            value={valores[id] || ''}
-            onChange={manejarCambioInput}
-            min="0"
-            step="any"
-            className="input"
-          />
-        </div>
-      ))}
-
-      <button onClick={manejarCalcular} className="btn">Calcular Volumen</button>
-
-      {error && <p className="error">{error}</p>}
-
-      {resultado !== null && !error && (
-        <p className="resultado">Volumen: {resultado} unidades cúbicas</p>
-      )}
-    </div>
-  );
+if(shape==='circle'){
+const r = get('radius');
+if(r>0){ area = Math.PI * r * r; per = 2 * Math.PI * r; }
 }
+
+
+if(shape==='rectangle'){
+const a=get('width'), b=get('height');
+if(a>0 && b>0){ area=a*b; per=2*(a+b); }
+}
+
+
+if(shape==='square'){
+const s=get('side');
+if(s>0){ area=s*s; per=4*s; }
+}
+
+
+if(shape==='triangle'){
+const b=get('base'), h=get('height'), a=get('sideA'), c=get('sideB');
+if(b>0 && h>0){ area=(b*h)/2; }
+// si los 3 lados están, calculamos perímetro
+if(a>0 && b>0 && c>0){ per = a + b + c; }
+}
+
+
+if(shape==='cylinder'){
+const r=get('radius'), h=get('height');
+if(r>0 && h>0){ vol = Math.PI * r * r * h; per = 2 * Math.PI * r; area = 2 * Math.PI * r * (r + h); }
+}
+
+
+resultArea.textContent = 'Área: ' + format(area);
+resultPerimeter.textContent = 'Perímetro / Superficie: ' + format(per);
+resultVolume.textContent = 'Volumen: ' + format(vol);
+}
+
+
+function reset(){
+inputsWrap.querySelectorAll('input').forEach(i=>i.value='');
+resultArea.textContent = 'Área: —';
+resultPerimeter.textContent = 'Perímetro / Superficie: —';
+resultVolume.textContent = 'Volumen: —';
+}
+
+
+// eventos
+shapeSelect.addEventListener('change', ()=>{
+createInputs(shapeSelect.value);
+reset();
+});
+
+
+calculateBtn.addEventListener('click', ()=>{ calculate(); });
+resetBtn.addEventListener('click', reset);
+
+
+// inicialización
+createInputs(shapeSelect.value);
+})();
