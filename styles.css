@@ -1,152 +1,150 @@
-(function () {
-  const shapeSelect = document.getElementById("shape");
-  const inputsWrap = document.getElementById("inputs");
-  const calculateBtn = document.getElementById("calculate");
-  const resetBtn = document.getElementById("reset");
-  const resultArea = document.getElementById("resultArea");
-  const resultPerimeter = document.getElementById("resultPerimeter");
-  const resultVolume = document.getElementById("resultVolume");
+:root {
+  --green-dark: #0f5132;
+  --green: #1fa65a;
+  --green-light: #a4e5c1;
+  --bg: #f4fff9;
+  --card: #ffffff;
+  --shadow: 0 6px 18px rgba(20, 80, 40, 0.1);
+}
 
-  const shapes = {
-    cube: [{ id: "side", label: "Lado (a)", placeholder: "ej. 5" }],
-    prism: [
-      { id: "length", label: "Largo (l)", placeholder: "ej. 6" },
-      { id: "width", label: "Ancho (w)", placeholder: "ej. 4" },
-      { id: "height", label: "Altura (h)", placeholder: "ej. 3" },
-    ],
-    cylinder: [
-      { id: "radius", label: "Radio (r)", placeholder: "ej. 3" },
-      { id: "height", label: "Altura (h)", placeholder: "ej. 7" },
-    ],
-    cone: [
-      { id: "radius", label: "Radio (r)", placeholder: "ej. 3" },
-      { id: "height", label: "Altura (h)", placeholder: "ej. 6" },
-      { id: "slant", label: "Generatriz (g)", placeholder: "opcional" },
-    ],
-    pyramid: [
-      { id: "baseLength", label: "Lado de la base (b)", placeholder: "ej. 5" },
-      { id: "height", label: "Altura (h)", placeholder: "ej. 7" },
-    ],
-    sphere: [{ id: "radius", label: "Radio (r)", placeholder: "ej. 4" }],
-  };
+* {
+  box-sizing: border-box;
+}
 
-  function createInputs(shape) {
-    inputsWrap.innerHTML = "";
-    shapes[shape].forEach((field) => {
-      const div = document.createElement("div");
-      const label = document.createElement("label");
-      label.textContent = field.label;
-      const input = document.createElement("input");
-      input.type = "number";
-      input.id = field.id;
-      input.placeholder = field.placeholder;
-      input.min = "0";
-      input.step = "any";
-      div.appendChild(label);
-      div.appendChild(input);
-      inputsWrap.appendChild(div);
-    });
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--green-dark);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.app {
+  width: 100%;
+  max-width: 1100px;
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.hero {
+  background: linear-gradient(90deg, var(--green-dark), var(--green));
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.hero p {
+  margin: 6px 0 0;
+  opacity: 0.9;
+}
+
+.calculator {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 20px;
+  padding: 20px;
+}
+
+.controls {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.controls label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.controls select,
+.controls input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(31, 166, 90, 0.3);
+  margin-bottom: 12px;
+  font-size: 1rem;
+  outline: none;
+}
+
+.controls input:focus,
+.controls select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-light);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+button {
+  flex: 1;
+  background: var(--green);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: var(--green-dark);
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px solid var(--green);
+  color: var(--green-dark);
+}
+
+.results {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+.results h2 {
+  margin-top: 0;
+  color: var(--green-dark);
+}
+
+.result-card {
+  background: rgba(31, 166, 90, 0.05);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.notes {
+  text-align: center;
+  padding: 10px;
+  font-size: 0.9rem;
+  color: var(--green-dark);
+  background: var(--green-light);
+}
+
+@media (max-width: 800px) {
+  .calculator {
+    grid-template-columns: 1fr;
   }
-
-  function format(n) {
-    return n && isFinite(n) ? n.toFixed(4) : "—";
-  }
-
-  function calculate() {
-    const shape = shapeSelect.value;
-    const get = (id) => parseFloat(document.getElementById(id)?.value);
-    let area = null,
-      per = null,
-      vol = null;
-
-    switch (shape) {
-      case "cube": {
-        const a = get("side");
-        if (a > 0) {
-          area = 6 * a * a;
-          per = 12 * a;
-          vol = a ** 3;
-        }
-        break;
-      }
-
-      case "prism": {
-        const l = get("length"),
-          w = get("width"),
-          h = get("height");
-        if (l > 0 && w > 0 && h > 0) {
-          area = 2 * (l * w + l * h + w * h);
-          per = 4 * (l + w + h) / 3;
-          vol = l * w * h;
-        }
-        break;
-      }
-
-      case "cylinder": {
-        const r = get("radius"),
-          h = get("height");
-        if (r > 0 && h > 0) {
-          area = 2 * Math.PI * r * (r + h);
-          per = 2 * Math.PI * r;
-          vol = Math.PI * r * r * h;
-        }
-        break;
-      }
-
-      case "cone": {
-        const r = get("radius"),
-          h = get("height");
-        let g = get("slant");
-        if (!g && r > 0 && h > 0) g = Math.sqrt(r * r + h * h);
-        if (r > 0 && g > 0 && h > 0) {
-          area = Math.PI * r * (r + g);
-          per = 2 * Math.PI * r;
-          vol = (1 / 3) * Math.PI * r * r * h;
-        }
-        break;
-      }
-
-      case "pyramid": {
-        const b = get("baseLength"),
-          h = get("height");
-        if (b > 0 && h > 0) {
-          const base = b * b;
-          const apotema = Math.sqrt((b / 2) ** 2 + h ** 2);
-          area = base + 2 * b * apotema / 2;
-          per = 4 * b;
-          vol = (1 / 3) * base * h;
-        }
-        break;
-      }
-
-      case "sphere": {
-        const r = get("radius");
-        if (r > 0) {
-          area = 4 * Math.PI * r * r;
-          per = 2 * Math.PI * r;
-          vol = (4 / 3) * Math.PI * r ** 3;
-        }
-        break;
-      }
-    }
-
-    resultArea.textContent = "Área: " + format(area);
-    resultPerimeter.textContent = "Perímetro / Superficie: " + format(per);
-    resultVolume.textContent = "Volumen: " + format(vol);
-  }
-
-  function reset() {
-    inputsWrap.querySelectorAll("input").forEach((i) => (i.value = ""));
-    resultArea.textContent = "Área: —";
-    resultPerimeter.textContent = "Perímetro / Superficie: —";
-    resultVolume.textContent = "Volumen: —";
-  }
-
-  shapeSelect.addEventListener("change", () => {
-    createInputs(shapeSelect.value);
-    reset();
-  });
-  calculateBtn.addEventListener("click", calculate);
-  resetBtn.addEventListener("click", reset);
-  createInputs(shapeSelect.value);
-})();
+}
