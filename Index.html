@@ -1,58 +1,82 @@
 <!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Calculadora de Formas</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<main class="app">
-<header class="hero">
-<h1>Calculadora de Formas</h1>
-<p>Área, perímetro y volúmenes — interfaz limpia en tonos verdes.</p>
-</header>
+input.type = 'number';
+input.id = field.id;
+input.placeholder = field.placeholder;
+input.min = '0';
+input.step = 'any';
+div.appendChild(label);
+div.appendChild(input);
+inputsWrap.appendChild(div);
+});
+}
 
 
-<section class="calculator">
-<aside class="controls">
-<label for="shape">Elige una figura</label>
-<select id="shape" aria-label="Seleccionar figura">
-<option value="circle">Círculo</option>
-<option value="rectangle">Rectángulo</option>
-<option value="square">Cuadrado</option>
-<option value="triangle">Triángulo</option>
-<option value="cylinder">Cilindro</option>
-</select>
+function format(n){
+return (n && isFinite(n)) ? n.toFixed(4) : '—';
+}
 
 
-<div id="inputs" class="inputs">
-<!-- Inputs dinámicos insertados por JS -->
-</div>
+function calculate(){
+const shape = shapeSelect.value;
+const get = id => parseFloat(document.getElementById(id)?.value);
+let area=null, per=null, vol=null;
 
 
-<div class="actions">
-<button id="calculate">Calcular</button>
-<button id="reset" class="secondary">Limpiar</button>
-</div>
-</aside>
+switch(shape){
+case 'cube':{
+const a=get('side');
+if(a>0){ area=6*a*a; per=12*a; vol=a**3; }
+break;
+}
+case 'prism':{
+const l=get('length'), w=get('width'), h=get('height');
+if(l>0 && w>0 && h>0){ area=2*(l*w + l*h + w*h); per=4*(l+w+h)/3; vol=l*w*h; }
+break;
+}
+case 'cylinder':{
+const r=get('radius'), h=get('height');
+if(r>0 && h>0){ area=2*Math.PI*r*(r+h); per=2*Math.PI*r; vol=Math.PI*r*r*h; }
+break;
+}
+case 'cone':{
+const r=get('radius'), h=get('height');
+let g=get('slant');
+if(!g && r>0 && h>0){ g=Math.sqrt(r*r+h*h); }
+if(r>0 && g>0 && h>0){ area=Math.PI*r*(r+g); per=2*Math.PI*r; vol=(1/3)*Math.PI*r*r*h; }
+break;
+}
+case 'pyramid':{
+const b=get('baseLength'), h=get('height');
+if(b>0 && h>0){ const base=b*b; const apotema=Math.sqrt((b/2)**2 + h**2); area=base + 2*b*apotema/2; per=4*b; vol=(1/3)*base*h; }
+break;
+}
+case 'sphere':{
+const r=get('radius');
+if(r>0){ area=4*Math.PI*r*r; per=2*Math.PI*r; vol=(4/3)*Math.PI*r**3; }
+break;
+}
+}
 
 
-<section class="results" aria-live="polite">
-<h2>Resultados</h2>
-<div id="resultArea" class="result-card">Área: —</div>
-<div id="resultPerimeter" class="result-card">Perímetro / Superficie: —</div>
-<div id="resultVolume" class="result-card">Volumen: —</div>
-</section>
-</section>
+resultArea.textContent = 'Área: ' + format(area);
+resultPerimeter.textContent = 'Perímetro / Superficie: ' + format(per);
+resultVolume.textContent = 'Volumen: ' + format(vol);
+}
 
 
-<footer class="notes">
-<small>Hecho con ❤️ — Selecciona una figura, introduce las medidas y presiona "Calcular".</small>
-</footer>
-</main>
+function reset(){
+inputsWrap.querySelectorAll('input').forEach(i=>i.value='');
+resultArea.textContent = 'Área: —';
+resultPerimeter.textContent = 'Perímetro / Superficie: —';
+resultVolume.textContent = 'Volumen: —';
+}
 
 
-<script src="script.js"></script>
+shapeSelect.addEventListener('change', ()=>{ createInputs(shapeSelect.value); reset(); });
+calculateBtn.addEventListener('click', calculate);
+resetBtn.addEventListener('click', reset);
+createInputs(shapeSelect.value);
+})();
+</script>
 </body>
 </html>
