@@ -1,7 +1,58 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import './style.css';
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calculadora de Formas</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+<header class="hero">
+<h1>Calculadora de Formas</h1>
+<p>Área, perímetro y volúmenes — interfaz limpia en tonos verdes.</p>
+</header>
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+
+<section class="calculator">
+<aside class="controls">
+<label for="shape">Elige una figura</label>
+<select id="shape" aria-label="Seleccionar figura">
+<option value="circle">Círculo</option>
+<option value="rectangle">Rectángulo</option>
+<option value="square">Cuadrado</option>
+<option value="triangle">Triángulo</option>
+<option value="cylinder">Cilindro</option>
+</select>
+
+
+<div id="inputs" class="inputs">
+<!-- Inputs dinámicos insertados por JS -->
+</div>
+
+
+<div class="actions">
+<button id="calculate">Calcular</button>
+<button id="reset" class="secondary">Limpiar</button>
+</div>
+</aside>
+
+
+<section class="results" aria-live="polite">
+<h2>Resultados</h2>
+<div id="resultArea" class="result-card">Área: —</div>
+<div id="resultPerimeter" class="result-card">Perímetro / Superficie: —</div>
+<div id="resultVolume" class="result-card">Volumen: —</div>
+</section>
+</section>
+
+
+<footer class="notes">
+<small>Hecho con ❤️ — Selecciona una figura, introduce las medidas y presiona "Calcular".</small>
+</footer>
+</main>
+
+
+<script src="script.js"></script>
+</body>
+</html>
